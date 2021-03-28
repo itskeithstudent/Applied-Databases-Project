@@ -1,0 +1,6 @@
+genrename	count(*)
+Comedy	2
+Drama	9
+Muscial	1
+Other	172
+Romantic	4
