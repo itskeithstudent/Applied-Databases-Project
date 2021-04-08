@@ -1,0 +1,1 @@
+db.employees.aggregate( [ { $group: { _id:{},"Min Pension Level":{$min:"$pensionLevel"} } }, { $project: {_id:0} } ] )

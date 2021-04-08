@@ -1,0 +1,1 @@
+db.employees.aggregate([ {$sort: { _id:1 }}, {$project:{_id:1, "Salary Bracket": { "$switch": { "branches": [ { "case": { "$lt": [ "$salary", 40000 ] }, "then": "Low"}, { "case": { "$lt": [ "$salary", 48000 ] }, "then": "Medium" } ], "default": "High" } } } } ])

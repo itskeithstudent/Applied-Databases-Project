@@ -1,0 +1,8 @@
+SELECT 
+g.GenreName, 
+Count(g.GenreName) as Count 
+FROM film f
+INNER JOIN genre g 
+	ON f.FilmGenreID = g.GenreId
+GROUP BY GenreName
+ORDER BY g.GenreName ASC;

@@ -1,0 +1,10 @@
+SELECT 
+a.ActorName,
+COUNT(a.ActorID) as Roles 
+FROM actor a
+INNER JOIN filmcast fc ON
+	a.ActorID = fc.CastActorID
+INNER JOIN film f ON 
+	fc.CastFilmID = f.FilmID
+GROUP BY (a.ActorName)
+ORDER BY Roles, ActorName ASC;

@@ -1,0 +1,14 @@
+SELECT distinct(f.FilmName), 
+c.CountryName 
+FROM film f
+INNER JOIN director d ON 
+	f.FilmDirectorID = d.DirectorID
+INNER JOIN filmcast fc ON 
+	f.FilmID = fc.CastFilmID
+INNER JOIN actor a ON
+	fc.CastActorID = a.ActorID
+INNER JOIN country c ON
+	a.ActorCountryID = c.CountryID
+WHERE a.ActorCountryID = d.DirectorCountryID
+AND c.CountryName != "United States"
+order by c.CountryName ASC;

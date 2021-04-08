@@ -1,0 +1,9 @@
+{"_id":"E01","name":"Tom Smith", "salary":45999.71, "pensionLevel":9, "expertise":["Java", "C++", "Python"], "emergencyContact":{"name":"Alice", "phone":"(086)1245789", "email":"Alice@gmail.com"}}
+{"_id":"E02","name":"Sara Jones", "salary":48123.25, "pensionLevel":7, "expertise":["MySQL", "Python"], "emergencyContact":{"name":"Alice", "phone":"(086)1245789"}}
+{"_id":"E03","name":"Bob Higgins", "salary":31500.66, "pensionLevel":2, "emergencyContact":{"name":"Donald", "phone":"(087)1122556", "email":"don@gmail.com"}}
+{"_id":"E04","name":"Mary Flynn", "salary":35554.54, "pensionLevel":4, "emergencyContact":{"name":"Shane", "phone":"(086)8855556", "email":"shane@gmail.com"}}
+{"_id":"E05","name":"Francis Farrell", "salary":50500.25, "pensionLevel":9, "expertise":["Java", "C++", "MongoDB"], "emergencyContact":{"name":"Ann", "phone":"(089)5555556", "email":"ann@gmail.com"}}
+{"_id":"E06","name":"Albert Flynn", "salary":48501.24, "pensionLevel":9, "expertise":["C++"], "emergencyContact":{"name":"Billy", "phone":"(089)8888555"}}
+{"_id":"E07","name":"Tommy Conners", "salary":47700.00, "pensionLevel":9, "expertise":["C++", "Java"], "emergencyContact":{"name":"Billy", "email":"billy@gmail.com"}}
+{"_id":"E08","name":"Damien Collins", "salary":42925.26, "pensionLevel":7, "expertise":["Python", "Java"], "emergencyContact":{"name":"Dan", "phone":"(088)8223455"}}
+{"_id":"E09","name":"Alison O'Hara", "salary":44415.94, "pensionLevel":7, "emergencyContact":{"name":"Alan", "phone":"(085)1234455"}}

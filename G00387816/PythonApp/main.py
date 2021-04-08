@@ -1,8 +1,12 @@
 import pymysql
 import queries
 
+#declaring global var cached_studios to later store result of user picking menu item 3 for any subsequent requests
+cached_studios = None
+
 def view_films():
-    print("View FILMS") #Text to display current menu item
+    print("\nFilms") #Text to display current menu item
+    print("------")
     conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
     #connection object to local mysql db moviesDB
 
@@ -72,32 +76,39 @@ def view_actors():
 
 def view_studios():
     
-    conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
-    #connection object to local mysql db moviesDB
+    global cached_studios #referencing the global variable cached_studios within the function
+    #if cached_studios is None then query hasn't been ran before, therefore run the query and store all the fetched rows in the global var
+    if cached_studios is None:
+        conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
+        #connection object to local mysql db moviesDB
 
-    #with to automatically close connection once code finishes executing
-    with conn:
-        try:
-            #print out current menu selection
-            print("\nStudios")
-            print("------")
-            
-            cursor = conn.cursor() #create cursor object
-            
-            cursor.execute(queries.list_studios)
+        #with to automatically close connection once code finishes executing
+        with conn:
+            try:
+                #print out current menu selection
+                print("\nStudios")
+                print("------")
+                
+                cursor = conn.cursor() #create cursor object
+                
+                cursor.execute(queries.list_studios)
 
-            query_result = cursor.fetchall() #get all rows from the executed cursor
-            
-            #got the maximum length of each of the fields to be printed out for consistent format spacing using max(length()) on the table in mysql 
-            for row in query_result:
-                print(f"{row['StudioID']:2} | {row['StudioName']:28}")
+                cached_studios = cursor.fetchall() #get all rows from the executed cursor
+                
+                #got the maximum length of each of the fields to be printed out for consistent format spacing using max(length()) on the table in mysql 
+                for row in cached_studios:
+                    print(f"{row['StudioID']:2} | {row['StudioName']:28}")
 
-        except pymysql.err.InternalError as e:
-            print("Hit InternalError - ",str(e))
-        except pymysql.err.ProgrammingError as e:
-            print("Check your query there was a syntax error - ", str(e))
-        except Exception as e:
-            print("Hit an unexpected error - ",str(e))
+            except pymysql.err.InternalError as e:
+                print("Hit InternalError - ",str(e))
+            except pymysql.err.ProgrammingError as e:
+                print("Check your query there was a syntax error - ", str(e))
+            except Exception as e:
+                print("Hit an unexpected error - ",str(e))
+    #Else the query must have been ran earlier
+    else:
+        for row in cached_studios:
+            print(f"{row['StudioID']:2} | {row['StudioName']:28}")
 
 
 def add_new_country():
