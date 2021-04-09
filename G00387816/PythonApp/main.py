@@ -162,7 +162,9 @@ def view_subtitled():
     while input_language == '':
         input_language = str(input("Enter Subtitle Language : "))
     
+    #set query for mongo find using user input as what documents to find
     mongo_sub_query = {"subtitles": input_language}
+    #set project for mongo find to only include id and subtitles (subtitles not necessary but convenient to have for testing)
     mongo_sub_project = {"_id":1, "subtitles":1}
 
     #set up client to local instance of MongoDB
