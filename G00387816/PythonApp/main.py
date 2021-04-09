@@ -1,5 +1,6 @@
 import pymysql
 import queries
+import pymongo
 
 #declaring global var cached_studios to later store result of user picking menu item 3 for any subsequent requests
 cached_studios = None
@@ -34,9 +35,8 @@ def view_films():
             print("Hit an unexpected error - ",str(e))
 
 def view_actors():
-
-    conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
     #connection object to local mysql db moviesDB
+    conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
 
     #with to automatically close connection once code finishes executing
     with conn:
@@ -112,8 +112,8 @@ def view_studios():
 
 
 def add_new_country():
-    conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
     #connection object to local mysql db moviesDB
+    conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
 
     #with to automatically close connection once code finishes executing
     with conn:
@@ -153,7 +153,69 @@ def add_new_country():
 
 
 def view_subtitled():
-    print("View subbed FILMS")
+
+    print("\nMovies with Subtitles")
+    print("---------------------")
+    #input_language will store user submitted subtitle language
+    input_language = ''
+    #while input_language is a blank str continue to request input from user e.g. if they enter blank
+    while input_language == '':
+        input_language = str(input("Enter Subtitle Language : "))
+    
+    mongo_sub_query = {"subtitles": input_language}
+    mongo_sub_project = {"_id":1, "subtitles":1}
+
+    #set up client to local instance of MongoDB
+    client = pymongo.MongoClient(host='localhost',port=27017)
+    with client:
+        #try to query the mongoDB
+        try:
+            db = client['movieScriptsDB']
+            collection = db['movieScripts']
+            subtitled_film_result = collection.find(mongo_sub_query,mongo_sub_project) #query mongo and store result
+        except Exception as e:
+            print(f"Hit an error, see below for detail:\n{str(e)}")
+            #return
+
+    list_subtitled_film_result = list(subtitled_film_result) #convert result from mongoDB to list for parsing
+    #check length of the list is greater than 0, if it is greater than 0 films have been found with subtitle user entered
+    if len(list_subtitled_film_result) > 0:
+
+        #for every remaining item in result list, step through and add it to the query_input_str, with comma seperating from last value of the var
+        list_input = []
+        for item in list_subtitled_film_result:
+            list_input.append(item["_id"])
+    
+        #connection object to local mysql db moviesDB
+        conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
+
+        #using with to automatically close connection once code finishes executing
+        with conn:
+            try:
+                cursor = conn.cursor() #create cursor object
+                
+                #format_s_placeholder will later be used insert the correct number of %s to queries.list_fimls_by_id
+                format_s_placeholder = ','.join(['%s'] * len(list_input))
+                #in this execute, passing in a list of varying length so the number of %s needs to change to reflect that
+                cursor.execute(queries.list_films_by_id.format(s_placeholder=format_s_placeholder),list_input) #supply the confirmed values for year_dob and gender
+
+                query_result = cursor.fetchall() #get all rows from the executed cursor
+                print(f"\nMovies with {input_language} subtitles")
+                print("---------------------------------------")
+                #got the maximum length of each of the fields to be printed out for consistent format spacing using max(length()) on the table in mysql 
+                for row in query_result:
+                    print(f"{row['FilmName']:19} | {row['FilmSynopsis'][:30]}")
+
+            except pymysql.err.InternalError as e:
+                print("Hit InternalError - ",str(e))
+            except pymysql.err.ProgrammingError as e:
+                print("Check your query there was a syntax error - ", str(e))
+            except Exception as e:
+                print("Hit an unexpected error - ",str(e))
+
+    #else no film was found with user entered subtitle language so print to inform them
+    else: 
+        print(f"\nUnfortunately the subtitle language {input_language} returned no results.")
 
 def add_new_movscript():
     print("Add new movie script")
