@@ -16,4 +16,8 @@ VALUES(%s, %s);'''
 #list_films_by_id is different to the above queries, it will get an unknown number of values within the IN so to address this 
 #will use string formatting to later insert the correct amount of %s
 list_films_by_id = '''SELECT FilmID, FilmName, FilmSynopsis FROM Film
-WHERE FilmID IN ({s_placeholder})'''
+WHERE FilmID IN ({s_placeholder});'''
+
+count_films_by_id = '''SELECT COUNT(FilmID) as count FROM Film
+WHERE FilmID IN (%s);'''
+

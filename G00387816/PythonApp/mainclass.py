@@ -6,6 +6,50 @@ import queries #python file holding variables for mysql queries
 #declaring global var cached_studios to later store result of user picking menu item 3 for any subsequent requests
 cached_studios = None
 
+
+
+class mysql_conn:
+    def __init__(self):
+        self.host = "localhost"
+        self.user = "root"
+        self.password = ""
+        self.db = "moviesDB"
+
+    def __connect__(self):
+        self.conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
+    
+    def fetch(self, query):
+        self.__connect__()
+        with self.conn:
+            try:
+                cursor = self.conn.cursor() #create cursor object
+                cursor.execute(queries.list_films_actors) #execute query from string variable in queries.py
+                return cursor
+            except Exception as e:
+                print(str(e))
+
+
+def view_films_alt():
+    test_inst = mysql_conn()
+    test = test_inst.fetch(queries.list_films_actors)
+    t2 = test.fetchmany(5)
+    for row in t2:
+        print(row)
+    for row in t2:
+        print(row)
+    t2 = test.fetchmany(5)
+    for row in t2:
+        print(row)
+
+    test_inst2 = mysql_conn()
+    test2 = test_inst2.fetch(queries.list_films_actors)
+    test2.fetchmany(10)
+    #for row in test2:
+        #print(test2)
+
+
+view_films_alt()
+
 def view_films():
     '''
     view_films displays film title and actor names from the Films table in groups of 5 until user exits
@@ -354,6 +398,3 @@ def main_menu():
             view_subtitled()
         elif selection =="6":
             add_new_movscript()
-
-if __name__ == "__main__":
-    main_menu()
