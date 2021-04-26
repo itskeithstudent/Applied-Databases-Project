@@ -6,50 +6,6 @@ import queries #python file holding variables for mysql queries
 #declaring global var cached_studios to later store result of user picking menu item 3 for any subsequent requests
 cached_studios = None
 
-
-
-class mysql_conn:
-    def __init__(self):
-        self.host = "localhost"
-        self.user = "root"
-        self.password = ""
-        self.db = "moviesDB"
-
-    def __connect__(self):
-        self.conn = pymysql.connect(host="localhost", user="root", password="", db="moviesDB", cursorclass=pymysql.cursors.DictCursor)
-    
-    def fetch(self, query):
-        self.__connect__()
-        with self.conn:
-            try:
-                cursor = self.conn.cursor() #create cursor object
-                cursor.execute(queries.list_films_actors) #execute query from string variable in queries.py
-                return cursor
-            except Exception as e:
-                print(str(e))
-
-
-def view_films_alt():
-    test_inst = mysql_conn()
-    test = test_inst.fetch(queries.list_films_actors)
-    t2 = test.fetchmany(5)
-    for row in t2:
-        print(row)
-    for row in t2:
-        print(row)
-    t2 = test.fetchmany(5)
-    for row in t2:
-        print(row)
-
-    test_inst2 = mysql_conn()
-    test2 = test_inst2.fetch(queries.list_films_actors)
-    test2.fetchmany(10)
-    #for row in test2:
-        #print(test2)
-
-
-view_films_alt()
-
 def view_films():
     '''
     view_films displays film title and actor names from the Films table in groups of 5 until user exits
@@ -270,7 +226,7 @@ def view_subtitled():
                 #format_s_placeholder will later be used insert the correct number of %s to queries.list_fimls_by_id
                 format_s_placeholder = ','.join(['%s'] * len(list_input))
                 #in this execute, passing in a list of varying length so the number of %s needs to change to reflect that
-                cursor.execute(queries.list_films_by_id.format(s_placeholder=format_s_placeholder),list_input) #supply the confirmed values for year_dob and gender
+                cursor.execute(queries.list_films_by_id.format(s_placeholder=format_s_placeholder),list_input)
 
                 query_result = cursor.fetchall() #get all rows from the executed cursor
                 print(f"\nMovies with {input_language} subtitles")
@@ -330,8 +286,7 @@ def add_new_movscript():
         try:
             cursor = conn.cursor() #create cursor object
             
-            #in this execute, passing in a list of varying length so the number of %s needs to change to reflect that
-            cursor.execute(queries.count_films_by_id, (input_film_id)) #supply the confirmed values for year_dob and gender
+            cursor.execute(queries.count_films_by_id, (input_film_id)) #pass in user input film id to query being executed 
 
             query_result = cursor.fetchall() #get all rows from the executed cursor
             #got the maximum length of each of the fields to be printed out for consistent format spacing using max(length()) on the table in mysql 
@@ -398,3 +353,6 @@ def main_menu():
             view_subtitled()
         elif selection =="6":
             add_new_movscript()
+
+if __name__ == "__main__":
+    main_menu()
